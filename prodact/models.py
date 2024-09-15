@@ -1,28 +1,34 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class Product(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(
-        max_length=100,
-        verbose_name='Product Name',
-        help_text='Product name should be less than 100 characters',
-        null=True,
-        blank=True
-    )
-    price = models.FloatField(
-        verbose_name='Product Price',
-        null=True,
-        blank=True
-    )
-    stock = models.IntegerField(
-        verbose_name='Product Stock',
-        help_text='Product stock should be a non-negative integer',
-        null=True,
-        blank=True
-    )
+
+
+
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=1000)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name if self.name else "Unnamed Product"
+        return self.name
+
+
+class Product(models.Model):
+    STATUS_CHOICES = [
+        ('new', 'New'),
+        ('stock', 'Stock'),
+
+    ]
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    description = models.TextField(blank=True, null=True)
+    price = models.DecimalField(max_digits=100, decimal_places=2, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title}"
